@@ -27,7 +27,7 @@ class integralImage:
     
     # computes integral box (x1,y1) is coord of upper left bound
     #                       (x2,y2) is coord of lower right bound
-    def integralBox(integral, x1, y1, x2, y2):
+    def integralBox(self,integral, x1, y1, x2, y2):
         return integral[x1][y1] + integral[x2][y2] - integral[x1][y2] - integral[x2][y1]
     
     # Testing integral function
