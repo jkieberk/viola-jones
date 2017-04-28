@@ -3,8 +3,8 @@ import numpy as np
 
 class integralImage:
     # returns integral image as numpy 2-d array
-    def __init__(self, image, label):
-        self.original = np.array(image)
+    def __init__(self, imagePath, label):
+        self.original = np.hstack(cv2.imread(imagePath))
         self.sum = 0
         self.label = label
         self.integral()
@@ -22,12 +22,12 @@ class integralImage:
         for i in range(1,height):
             for j in range(1,width):
                 integral[i][j] = self.original[i][j] + integral[i-1][j] + integral[i][j-1] - integral[i-1][j-1]
-        print integral
+        #print integral
         return integral
     
     # computes integral box (x1,y1) is coord of upper left bound
     #                       (x2,y2) is coord of lower right bound
-    def integralBox(integral, x1, y1, x2, y2):
+    def integralBox(self,integral, x1, y1, x2, y2):
         return integral[x1][y1] + integral[x2][y2] - integral[x1][y2] - integral[x2][y1]
     
     # Testing integral function
