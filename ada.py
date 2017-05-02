@@ -41,7 +41,7 @@ def train(positives, negatives, T):
 
 
     # REMEMBER TO FIX!!!!!
-    for t in range(1):
+    for t in range(T):
         # 1. Normalize weights
         for image in allImages:
             image.weight = image.weight/denom
@@ -102,7 +102,8 @@ def train(positives, negatives, T):
             feature.threshold = (classified[lowImgIndex][1] + classified[lowImgIndex-1][1])/2
             #print "New threshold: " + str(feature.threshold)
             featureArray.append([feature, allImages[imgIndex].weight])
-            
+        print featureArray[len(featureArray) - 1]
+        raw_input("!! Enter Enter to continue...")
         #Get best weak classifier
             
                 
