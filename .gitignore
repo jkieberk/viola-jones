@@ -2,3 +2,5 @@ faces/
 nonfaces/
 *.jpg
 *.pgm
+INTEGRALFACES
+INTEGRALNONFACE

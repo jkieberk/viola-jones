@@ -5,6 +5,8 @@ class integralImage:
     # returns integral image as numpy 2-d array
     def __init__(self, imagePath, label):
         self.original = np.hstack(cv2.imread(imagePath))
+        #Resize to 24x24
+        self.original = cv2.resize(self.original, (24, 24)) 
         self.sum = 0
         self.label = label
         self.integralArray = self.integral()

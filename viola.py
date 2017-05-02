@@ -16,6 +16,7 @@ def store_integral_images(path, label):
                 i = i + 1
                 
     store_integrals(images, label)
+    return images
 
 def load_integral_images_faces():
     f = open('INTEGRALFACES', 'r')
@@ -46,7 +47,7 @@ def main():
         print 'Loaded faces file'
     else:
         print 'Loading faces'
-        store_integral_images("faces/", 1)
+        faces = store_integral_images("faces/", 1)
         
     #Load nonfaces imaegs with Label of 0
     nonfacepath = os.path.abspath('INTEGRALNONFACES')
