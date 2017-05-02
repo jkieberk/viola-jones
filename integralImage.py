@@ -7,9 +7,9 @@ class integralImage:
         self.original = np.hstack(cv2.imread(imagePath))
         self.sum = 0
         self.label = label
-        self.integral()
+        self.integralArray = self.integral()
         self.weight = 0
-        
+
     def integral(self):
         height = self.original.shape[0]
         width  = self.original.shape[1]
@@ -24,16 +24,16 @@ class integralImage:
                 integral[i][j] = self.original[i][j] + integral[i-1][j] + integral[i][j-1] - integral[i-1][j-1]
         #print integral
         return integral
-    
+
     # computes integral box (x1,y1) is coord of upper left bound
     #                       (x2,y2) is coord of lower right bound
     def integralBox(self,integral, x1, y1, x2, y2):
         return integral[x1][y1] + integral[x2][y2] - integral[x1][y2] - integral[x2][y1]
-    
+
     # Testing integral function
     # class testIntegral(object):
     #     data = [[5,2,5,2],[3,6,3,6],[5,2,5,2],[3,6,3,6]]
-    
+
     #     def __getitem__(self, key):
     #         return self.data[key]
     #     def __init__(self):
