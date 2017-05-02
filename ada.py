@@ -39,17 +39,29 @@ def train(positives, negatives, T):
     for image in allImages:
         denom += image.weight
 
-    for t in range(T):
+    # REMEMBER TO FIX!!!!!
+    for t in range(1):
         # 1. Normalize weights
         for image in allImages:
             image.weight = image.weight/denom
         
         #2.  Select best weak classifier
         #2.1 
-        classifiers = []
+        classified = []
+        i = 0
+        imageIndex = 0
         for feature in features:
             for img in allImages:
-                classifiers.append(feature.get_vote(img))
+                classified.append([imageIndex, feature.get_score(img)])
+                i = i + 1
+                imageIndex = imageIndex + 1
+                if i % 100000 == 0:
+                    print str(i) + " classifiers created for T " + str(t)
+        
+        classified = classified.sort(key=lambda x: x[1])
+        print classified[0]
+        
+
                 
         
                 
