@@ -1,5 +1,4 @@
-faces
-nonfaces
-*.jpeg
+faces/
+nonfaces/
+*.jpg
 *.pgm
-upload
