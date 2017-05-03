@@ -6,20 +6,32 @@ import os
 import pickle
 
 def testImages(classifiers, image):
-    return 1 if sum([c[0].get_vote(image) * np.log(1/c[1]) for c in classifiers]) >= 0 else -1
+    #c[0][0] feature, c[0][1] beta
+    #print "is " + str(sum([c[0].get_vote(image) * np.log(1/c[1]) for c in classifiers])) + " >= " + str(0.5 * sum([np.log(1/c[1]) for c in classifiers])) + "?"
+    return 1 if sum([c[0].get_vote(image) * np.log(1/c[1]) for c in classifiers]) >= 0.5 * sum([np.log(1/c[1]) for c in classifiers]) else 0
     
 def store_integral_images(path, label):
     images = []
     i = 1
     for _file in os.listdir(path):
         if _file.endswith('.jpg'):
-            if i < 500:
+            if i < 21:
                 images.append(integralImage(os.path.join(path, _file), label))
                 print 'Image ' + str(i) + ' loaded'
                 i = i + 1
                 
     store_integrals(images, label)
     return images
+    
+def load_test_images(path, label):
+    images = []
+    i = 1
+    for _file in os.listdir(path):
+        if _file.endswith('.jpg'):
+            images.append(integralImage(os.path.join(path, _file), label))
+            print 'Test image ' + str(i) + ' loaded'
+            i = i + 1
+    return images            
 
 def load_integral_images_faces():
     f = open('INTEGRALFACES', 'r')
@@ -62,20 +74,25 @@ def main():
         nonfaces = store_integral_images("nonfaces/", 0)
 
     #Train classifiers
-    hypotheses = 20
+    hypotheses = 3
     classifiers = train(faces, nonfaces, hypotheses)
     
     #Load test images to classifiers
-    testImage = faces + nonfaces
+    testfaces = load_test_images("faces/", 1)
+    testnonfaces = load_test_images("nonfaces/", 0)
     
+    testImage = testfaces + testnonfaces
+    
+    correct_faces = 0
+    correct_non_faces = 0
     for image in testImage:
         result = testImages(classifiers, image)
         if image.label == 1 and result == 1:
             correct_faces += 1
-        if image.label == -1 and result == -1:
+        if image.label == 0 and result == 0:
             correct_non_faces += 1
             
-    print '..done. Result:\n  Faces: ' + str(correct_faces) + '/' + str(len(faces)) + '\n  non-Faces: ' + str(correct_non_faces) + '/' + str(len(non_faces))
+    print 'Result:\n  Faces: ' + str(correct_faces) + '/' + str(len(testfaces)) + '\n  non-Faces: ' + str(correct_non_faces) + '/' + str(len(testnonfaces))
     
 if __name__ == "__main__":
     main()

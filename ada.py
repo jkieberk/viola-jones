@@ -34,17 +34,18 @@ def train(positives, negatives, T):
     print str(len(features)) + ' features created'
     
     allImages = np.concatenate([positives,negatives])
-
-    #Get denominator for normalization loop
-    denom  = 0
-    for image in allImages:
-        denom += image.weight
-
-
+    #np.random.shuffle(allImages)
+    
     classifiers = []
     # REMEMBER TO FIX!!!!!
     for t in range(T):
+        denom = 0.0
+        #Get denominator for normalization loop
+        for image in allImages:
+            #print image.weight
+            denom += image.weight
         # 1. Normalize weights
+        #print "denom = " + str(denom)
         for image in allImages:
             image.weight = image.weight/denom
         
@@ -57,19 +58,20 @@ def train(positives, negatives, T):
             else:
                 totalNegWeight = totalNegWeight + image.weight
         
-        i = 0
+        #i = 0
         imageIndex = 0
         featureIndex = -1
         #Iterate over every feature
+        print "Generating " + str(len(features) * len(allImages)) + " classifiers for round " + str(t) + " (this may take a while)"
         for feature in features:
             featureIndex = featureIndex + 1
             classified = []
             for img in allImages:
                 classified.append([imageIndex, feature.get_score(img)])
                 imageIndex = imageIndex + 1
-                i = i + 1
-                if i % 1000000 == 0:
-                    print str(i) + " classifiers created for T " + str(t)
+                #i = i + 1
+                #if i % 1000000 == 0:
+                    #print str(i) + " classifiers created for T " + str(t)
             imageIndex = 0        
         
             classified.sort(key=lambda x: x[1])
@@ -110,7 +112,6 @@ def train(positives, negatives, T):
             featureIndex = featureIndex + 1
             totalWeight = 0
             for image in allImages:
-                imageWeight = image.weight
                 imageLabel  = image.label
                 imageVote  =  feature.get_vote(image)
                 totalWeight = totalWeight + image.weight * abs(imageVote - imageLabel)
@@ -121,23 +122,31 @@ def train(positives, negatives, T):
         
         #Get best weak classifier
         bestWeakClassifier = [featureArray[0][0], features[featureArray[0][1]]]
+        #print "Lowest e = " + str(bestWeakClassifier[0])
         #del features[featureArray[1]]
         #features.delete(featureArray[1])
         features = np.delete(features, featureArray[1])
         
-        beta = 0
+        beta = 0.0
         #Update weights
         for image in allImages:
             weakClassifierScore = bestWeakClassifier[1].get_vote(image)
             if(weakClassifierScore == image.label):
-                score = 0
+                print "Correct."
+                #If bestWeakClassifier[0] is 0 everything breaks
+                beta = bestWeakClassifier[0] / (1. - bestWeakClassifier[0])
+                #print "New weight = " + str(image.weight * beta)
             else:
+                print "Incorrect."
                 score = 1
-                beta = bestWeakClassifier[0] / 1 - bestWeakClassifier[0]
-            image.weight = image.weight * pow(beta, 1 - score)
-        
-        
-        classifiers.append([bestWeakClassifier, beta])
+                #print bestWeakClassifier[0]
+                #print 1- bestWeakClassifier[0]
+                #print ''
+                beta = 1.0
+                #print "Weight = " + str(image.weight * beta)
+            image.weight = image.weight * beta
+            #print image.weight
+        classifiers.append([bestWeakClassifier[1], beta])
         #raw_input("!! Enter Enter to continue...")
         print "Best weak classifiers selected. Next round"
     print "Done learning."

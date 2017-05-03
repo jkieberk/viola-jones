@@ -4,3 +4,4 @@ nonfaces/
 *.pgm
 INTEGRALFACES
 INTEGRALNONFACES
+*.pem
