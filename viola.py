@@ -5,12 +5,15 @@ from ada import train
 import os
 import pickle
 
+def testImages(classifiers, image):
+    return 1 if sum([c[0].get_vote(image) * np.log(1/c[1]) for c in classifiers]) >= 0 else -1
+    
 def store_integral_images(path, label):
     images = []
     i = 1
     for _file in os.listdir(path):
         if _file.endswith('.jpg'):
-            if i < 5:
+            if i < 500:
                 images.append(integralImage(os.path.join(path, _file), label))
                 print 'Image ' + str(i) + ' loaded'
                 i = i + 1
@@ -61,6 +64,18 @@ def main():
     #Train classifiers
     hypotheses = 20
     classifiers = train(faces, nonfaces, hypotheses)
+    
+    #Load test images to classifiers
+    testImage = faces + nonfaces
+    
+    for image in testImage:
+        result = testImages(classifiers, image)
+        if image.label == 1 and result == 1:
+            correct_faces += 1
+        if image.label == -1 and result == -1:
+            correct_non_faces += 1
+            
+    print '..done. Result:\n  Faces: ' + str(correct_faces) + '/' + str(len(faces)) + '\n  non-Faces: ' + str(correct_non_faces) + '/' + str(len(non_faces))
     
 if __name__ == "__main__":
     main()
