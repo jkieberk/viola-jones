@@ -129,15 +129,17 @@ def train(positives, negatives, T):
         
         beta = 0.0
         #Update weights
+        correct = 0
+        incorrect = 0
         for image in allImages:
             weakClassifierScore = bestWeakClassifier[1].get_vote(image)
             if(weakClassifierScore == image.label):
-                print "Correct."
+                correct += 1
                 #If bestWeakClassifier[0] is 0 everything breaks
                 beta = bestWeakClassifier[0] / (1. - bestWeakClassifier[0])
                 #print "New weight = " + str(image.weight * beta)
             else:
-                print "Incorrect."
+                incorrect += 1
                 score = 1
                 #print bestWeakClassifier[0]
                 #print 1- bestWeakClassifier[0]
@@ -148,6 +150,8 @@ def train(positives, negatives, T):
             #print image.weight
         classifiers.append([bestWeakClassifier[1], beta])
         #raw_input("!! Enter Enter to continue...")
+        print "Correct: " + str(correct)
+        print "Incorrect: " + str(incorrect)
         print "Best weak classifiers selected. Next round"
     print "Done learning."
     return classifiers            

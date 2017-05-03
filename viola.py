@@ -15,9 +15,9 @@ def store_integral_images(path, label):
     i = 1
     for _file in os.listdir(path):
         if _file.endswith('.jpg'):
-            if i < 21:
+            if i < 201:
                 images.append(integralImage(os.path.join(path, _file), label))
-                print 'Image ' + str(i) + ' loaded'
+                #print 'Image ' + str(i) + ' loaded'
                 i = i + 1
                 
     store_integrals(images, label)
@@ -25,12 +25,12 @@ def store_integral_images(path, label):
     
 def load_test_images(path, label):
     images = []
-    i = 1
+    #i = 1
     for _file in os.listdir(path):
         if _file.endswith('.jpg'):
             images.append(integralImage(os.path.join(path, _file), label))
-            print 'Test image ' + str(i) + ' loaded'
-            i = i + 1
+            #print 'Test image ' + str(i) + ' loaded'
+            #i = i + 1
     return images            
 
 def load_integral_images_faces():
@@ -77,6 +77,13 @@ def main():
     hypotheses = 3
     classifiers = train(faces, nonfaces, hypotheses)
     
+    print classifiers
+    #Save classifiers
+    f = open('CLASSIFIERS', 'w')
+    with f as output:
+        pickle.dump(classifiers, output, pickle.HIGHEST_PROTOCOL)
+    
+    print "Loading test images"
     #Load test images to classifiers
     testfaces = load_test_images("faces/", 1)
     testnonfaces = load_test_images("nonfaces/", 0)
